@@ -1,0 +1,96 @@
+{% extends "ads/base.html" %}
+{% block title %}Профиль: {{ user.username }}{% endblock %}
+{% block content %}
+
+<h2>Профиль пользователя: {{ user.username }}</h2>
+<hr>
+
+<div class="row">
+    <div class="col-md-6">
+        <h4>Мои объявления</h4>
+        {% if user_ads %}
+            <ul class="list-group mb-4">
+                {% for ad in user_ads %}
+                    <li class="list-group-item">
+                        <strong>{{ ad.title }}</strong><br>
+                        {{ ad.description|truncatechars:50 }}
+                        <p><small>Категория: {{ ad.category }} | Состояние: {{ ad.get_condition_display }}</small></p>
+
+                        <!-- Входящие предложения по этому объявлению -->
+                        {% with proposals=ad.received_proposals.all %}
+                            {% if proposals %}
+                                <h6>Предложения:</h6>
+                                <ul class="list-unstyled">
+                                    {% for proposal in proposals %}
+                                        <li>
+                                            От: {{ proposal.ad_sender.user.username }} — 
+                                            "{{ proposal.ad_sender.title }}"<br>
+                                            Статус: 
+                                            <span class="badge bg-{{ proposal.status|lower }}">
+                                                {{ proposal.get_status_display }}
+                                            </span>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            {% else %}
+                                <small class="text-muted">Нет предложений</small>
+                            {% endif %}
+                        {% endwith %}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>У вас пока нет объявлений.</p>
+        {% endif %}
+    </div>
+
+    <div class="col-md-6">
+        <h4>Мои входящие предложения</h4>
+        {% if received_proposals %}
+            <ul class="list-group mb-4">
+                {% for proposal in received_proposals %}
+                    <li class="list-group-item">
+                        От: {{ proposal.ad_sender.user.username }}<br>
+                        "{{ proposal.ad_sender.title }}" → "{{ proposal.ad_receiver.title }}"<br>
+                        Статус: 
+                        <span class="badge bg-{{ proposal.status|lower }}">
+                            {{ proposal.get_status_display }}
+                        </span>
+                        <br>
+                        Комментарий: {{ proposal.comment|default:"—" }}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="text-muted">Нет входящих предложений.</p>
+        {% endif %}
+
+        <h4>Мои исходящие предложения</h4>
+        {% if sent_proposals %}
+            <ul class="list-group">
+                {% for proposal in sent_proposals %}
+                    <li class="list-group-item">
+                        Кому: {{ proposal.ad_receiver.user.username }}<br>
+                        "{{ proposal.ad_sender.title }}" → "{{ proposal.ad_receiver.title }}"<br>
+                        Статус: 
+                        <span class="badge bg-{{ proposal.status|lower }}">
+                            {{ proposal.get_status_display }}
+                        </span>
+                        <br>
+                        Комментарий: {{ proposal.comment|default:"—" }}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="text-muted">Вы ещё не отправили ни одного предложения.</p>
+        {% endif %}
+    </div>
+</div>
+
+<a href="{% url 'ad_list' %}" class="btn btn-primary mt-3">Все объявления</a>
+<a href="{% url 'proposal_list' %}" class="btn btn-secondary mt-3">Все мои предложения</a>
+<a href="{% url 'create_ad' %}" class="btn btn-secondary mt-3"> Создать объявление </a>
+
+{% endblock %}
+
+

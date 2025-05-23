@@ -1,0 +1,25 @@
+{% extends "ads/base.html" %}
+{% block title %}Мои предложения обмена{% endblock %}
+{% block content %}
+
+<h2>Мои предложения обмена</h2>
+
+<ul class="list-group">
+  {% for proposal in proposals %}
+    <li class="list-group-item">
+      <strong>От:</strong> {{ proposal.ad_sender.title }} ({{ proposal.ad_sender.user }})
+      <br>
+      <strong>Получатель:</strong> {{ proposal.ad_receiver.title }} ({{ proposal.ad_receiver.user }})
+      <br>
+      <strong>Статус:</strong> {{ proposal.get_status_display }}
+      <br>
+      <a href="{% url 'proposal_detail' pk=proposal.pk %}" class="btn btn-info btn-sm mt-2">Подробнее</a>
+    </li>
+  {% empty %}
+    <p>У вас нет предложений.</p>
+  {% endfor %}
+</ul>
+
+<a href="{% url 'ad_list' %}" class="btn btn-secondary mt-3">Назад к объявлениям</a>
+
+{% endblock %}

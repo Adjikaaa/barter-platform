@@ -1,0 +1,14 @@
+{% extends "ads/base.html" %}
+{% load static %}
+{% block content %}
+<div class="body_bg layout_padding"></div>
+  {% block title %} 
+    <h1>Создать объявление</h1>
+  {% endblock %}
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Сохранить</button>
+  </form>
+</div>
+{% endblock %}

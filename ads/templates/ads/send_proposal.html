@@ -1,0 +1,17 @@
+{% extends "ads/base.html" %}
+{% block title %}Предложить обмен{% endblock %}
+{% block content %}
+
+<h2>Предложить обмен на "{{ ad.title }}"</h2>
+
+<form method="post">
+  {% csrf_token %}
+  <div class="mb-3">
+    <label for="id_comment" class="form-label">Комментарий (необязательно)</label>
+    {{ form.comment }}
+  </div>
+  <button type="submit" class="btn btn-success">Отправить предложение</button>
+  <a href="{% url 'ad_detail' pk=ad.pk %}" class="btn btn-secondary">Отмена</a>
+</form>
+
+{% endblock %}

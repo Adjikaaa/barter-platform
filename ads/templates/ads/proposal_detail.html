@@ -1,0 +1,26 @@
+{% extends "ads/base.html" %}
+{% block title %}Детали предложения{% endblock %}
+{% block content %}
+
+<h2>Детали предложения обмена</h2>
+
+<p><strong>От:</strong> {{ proposal.ad_sender.title }} ({{ proposal.ad_sender.user }})</p>
+<p><strong>Кому:</strong> {{ proposal.ad_receiver.title }} ({{ proposal.ad_receiver.user }})</p>
+<p><strong>Комментарий:</strong> {{ proposal.comment|default:"—" }}</p>
+<p><strong>Статус:</strong> {{ proposal.get_status_display }}</p>
+
+{% if user == proposal.ad_receiver.user %}
+  <form method="post" action="{% url 'update_proposal_status' pk=proposal.id %}">
+    {% csrf_token %}
+    <select name="status" class="form-select mb-2 w-25">
+      <option value="pending" {% if proposal.status == "pending" %}selected{% endif %}>Ожидает</option>
+      <option value="accepted" {% if proposal.status == "accepted" %}selected{% endif %}>Принято</option>
+      <option value="rejected" {% if proposal.status == "rejected" %}selected{% endif %}>Отклонено</option>
+    </select>
+    <button type="submit" class="btn btn-primary">Сохранить изменения</button>
+  </form>
+{% endif %}
+
+<a href="{% url 'proposal_list' %}" class="btn btn-secondary">Назад к списку</a>
+
+{% endblock %}

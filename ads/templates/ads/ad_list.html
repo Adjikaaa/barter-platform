@@ -1,0 +1,62 @@
+{% extends "ads/base.html" %}
+{% load static %}
+{% block content %}
+<div class="body_bg layout_padding">
+<link rel="stylesheet" href="{% static 'ads/css/styles.css' %}">
+</head>
+
+<h1>Объявления</h1>
+
+<form method="get">
+  <input type="text" name="q" placeholder="Поиск..." value="{{ request.GET.q }}">
+
+  <label for="category">Категория:</label>
+  <select name="category" id="category">
+    <option value="">Все категории</option>
+    {% for cat in categories %}
+      <option value="{{ cat }}" {% if cat == current_category %}selected{% endif %}>
+        {{ cat }}
+      </option>
+    {% endfor %}
+  </select>
+
+  <label for="condition">Состояние:</label>
+  <select name="condition" id="condition">
+    <option value="">Все состояния</option>
+    <option value="new" {% if request.GET.condition == "new" %}selected{% endif %}>Новый</option>
+    <option value="used" {% if request.GET.condition == "used" %}selected{% endif %}>Б/у</option>
+  </select>
+
+  <button type="submit">Фильтровать</button>
+</form>
+
+<ul>
+  {% for ad in page_obj %}
+  <div class="body_bg layout_padding"></div>
+    <div class="ad-item">
+    <h3>{{ ad.title }}</h3>
+    <p>{{ ad.description|truncatechars:50 }}</p>
+    <a href="{% url 'ad_detail' pk=ad.pk %}" class="btn btn-primary">Подробнее</a>
+  </div>
+  {% endfor %}
+</ul>
+
+  <div class="pagination">
+    <span class="step-links">
+      {% if page_obj.has_previous %}
+        <a href="?page=1">&laquo; first</a>
+        <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+      {% endif %}
+
+      <span class="current">
+        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+      </span>
+
+      {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}">next</a>
+        <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+      {% endif %}
+    </span>
+  </div>
+</div>
+{% endblock %}
